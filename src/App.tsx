@@ -3,9 +3,10 @@ import { students } from './students';
 import { submit } from './submit';
 import { matchFilesToStudents } from './matching';
 import { MOCK_FILES } from './mockFiles';
-import type { FileMappingEntry, MappingField, RawFile, Step } from './types';
+import { MatchStatus, type FileMappingEntry, type MappingField, type RawFile, type Step } from './types';
 import WizardHeader from './components/WizardHeader';
-import WizardFooter from './components/WizardFooter';
+import WizardFooterNext from './components/WizardFooterNext';
+import WizardFooterConfirm from './components/WizardFooterConfirm';
 import UploadStep from './components/UploadStep';
 import MappingStep from './components/MappingStep';
 import styles from './App.module.css';
@@ -65,7 +66,7 @@ export default function App() {
     setMappedFiles((prev) =>
       prev.map((f) =>
         f.id === fileId
-          ? { ...f, mappedStudentId: studentId, matchStatus: 'matched', isEditingMatch: false }
+          ? { ...f, mappedStudentId: studentId, matchStatus: MatchStatus.Matched, isEditingMatch: false }
           : f
       )
     );
@@ -99,8 +100,6 @@ export default function App() {
   const nextDisabled = !mappingField || rawFiles.length === 0;
   const allMapped =
     mappedFiles.length > 0 && mappedFiles.every((f) => f.mappedStudentId !== null);
-
-  const nextLabel = step === 1 ? 'Next' : 'Confirm & Upload';
 
   return (
     <div className={styles.page}>
@@ -137,14 +136,23 @@ export default function App() {
           </p>
         )}
 
-        <WizardFooter
-          onCancel={handleCancel}
-          onBack={step === 2 ? handleBack : undefined}
-          onNext={step === 1 ? handleNext : handleSubmit}
-          nextLabel={nextLabel}
-          nextDisabled={step === 1 ? nextDisabled : !allMapped}
-          isLoading={isSubmitting}
-        />
+        {step === 1 && (
+          <WizardFooterNext
+            onCancel={handleCancel}
+            onNext={handleNext}
+            nextDisabled={nextDisabled}
+          />
+        )}
+
+        {step === 2 && (
+          <WizardFooterConfirm
+            onCancel={handleCancel}
+            onBack={handleBack}
+            onSubmit={handleSubmit}
+            submitDisabled={!allMapped}
+            isLoading={isSubmitting}
+          />
+        )}
       </div>
     </div>
   );

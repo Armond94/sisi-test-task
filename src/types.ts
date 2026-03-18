@@ -2,7 +2,14 @@ import type { Student } from './students';
 
 export type MappingField = 'id' | 'name' | 'studentID';
 
-export type MatchStatus = 'matched' | 'no-match' | 'multiple-matches';
+// Becasue of this erasableSyntaxOnly
+export const MatchStatus = {
+  Matched: 'matched',
+  NoMatch: 'no-match',
+  MultipleMatches: 'multiple-matches',
+} as const;
+
+export type MatchStatus = typeof MatchStatus[keyof typeof MatchStatus];
 
 export type Step = 1 | 2;
 

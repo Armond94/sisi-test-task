@@ -1,5 +1,5 @@
 import type { Student } from './students';
-import type { FileMappingEntry, MappingField, RawFile } from './types';
+import { MatchStatus, type FileMappingEntry, type MappingField, type RawFile } from './types';
 
 export function normalizeForMatch(str: string): string {
   return str.toLowerCase().trim();
@@ -24,17 +24,17 @@ export function matchFilesToStudents(
 
     const matchStatus =
       candidates.length === 1
-        ? 'matched'
+        ? MatchStatus.Matched
         : candidates.length === 0
-          ? 'no-match'
-          : 'multiple-matches';
+          ? MatchStatus.NoMatch
+          : MatchStatus.MultipleMatches;
 
     return {
       id: file.id,
       fileName: file.fileName,
       fileType: file.fileType,
       matchStatus,
-      mappedStudentId: matchStatus === 'matched' ? candidates[0].id : null,
+      mappedStudentId: matchStatus === MatchStatus.Matched ? candidates[0].id : null,
       candidates,
       isEditingMatch: false,
     };
