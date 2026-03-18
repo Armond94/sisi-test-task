@@ -1,0 +1,59 @@
+/* Matched card */
+.matchedCard {
+  display: flex;
+  align-items: center;
+  gap: var(--gap--small);
+  min-width: 0;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.studentInfo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.studentName {
+  font-family: var(--general---font-family);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--colors-tones-neutral-n-10);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.studentGrade {
+  font-family: var(--general---font-family);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  color: var(--colors-tones-neutral-n-40);
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: var(--border-radius--medium);
+  color: var(--colors-tones-neutral-n-50);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background-color 100ms ease, color 100ms ease;
+}
+
+.editBtn:hover {
+  background-color: var(--colors-tones-neutral-n-93);
+  color: var(--colors-tones-neutral-n-20);
+}
