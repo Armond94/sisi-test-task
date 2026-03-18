@@ -47,24 +47,25 @@ export default function CustomSelect<T extends string>({
 
   const selectedLabel = flatOptions.find((o) => o.value === value)?.label;
 
+  const handlePointerDown = (e: PointerEvent) => {
+    if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
+      setOpen(false);
+    }
+  }
+
   // Close on outside click
   useEffect(() => {
     if (!open) return;
-    function handlePointerDown(e: PointerEvent) {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    }
     document.addEventListener('pointerdown', handlePointerDown);
     return () => document.removeEventListener('pointerdown', handlePointerDown);
-  }, [open]);
+  }, [open, handlePointerDown]);
 
   // Scroll focused option into view
   useEffect(() => {
     if (open && focusedIndex >= 0) {
       optionRefs.current[focusedIndex]?.scrollIntoView({ block: 'nearest' });
     }
-  }, [focusedIndex, open]);
+  }, [focusedIndex, open, optionRefs]);
 
   function openDropdown() {
     setOpen(true);
@@ -77,27 +78,6 @@ export default function CustomSelect<T extends string>({
       openDropdown();
     } else if (e.key === 'Escape') {
       setOpen(false);
-    }
-  }
-
-  function handleOptionKeyDown(e: React.KeyboardEvent, index: number) {
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      setFocusedIndex(Math.min(index + 1, flatOptions.length - 1));
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (index === 0) {
-        setOpen(false);
-        triggerRef.current?.focus();
-      } else {
-        setFocusedIndex(index - 1);
-      }
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      selectOption(flatOptions[index].value);
-    } else if (e.key === 'Escape' || e.key === 'Tab') {
-      setOpen(false);
-      triggerRef.current?.focus();
     }
   }
 
@@ -133,7 +113,22 @@ export default function CustomSelect<T extends string>({
             isFocused ? styles.optionFocused : '',
           ].join(' ')}
           onPointerDown={() => selectOption(opt.value)}
-          onKeyDown={(e) => handleOptionKeyDown(e, flatIndex)}
+          onKeyDown={(e) => {
+              if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                setFocusedIndex(Math.min(flatIndex + 1, flatOptions.length - 1));
+              } else if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (flatIndex === 0) { setOpen(false); triggerRef.current?.focus(); }
+                else setFocusedIndex(flatIndex - 1);
+              } else if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                selectOption(opt.value);
+              } else if (e.key === 'Escape' || e.key === 'Tab') {
+                setOpen(false);
+                triggerRef.current?.focus();
+              }
+            }}
           onMouseEnter={() => setFocusedIndex(flatIndex)}
         >
           {isSelected ? (

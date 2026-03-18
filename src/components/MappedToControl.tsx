@@ -1,6 +1,6 @@
 import { Pencil } from 'lucide-react';
 import { students } from '../students';
-import type { FileMappingEntry } from '../types';
+import { MatchStatus, type FileMappingEntry } from '../types';
 import styles from './MappedToControl.module.css';
 import CustomSelect, { type SelectGroup } from './CustomSelect';
 
@@ -18,7 +18,7 @@ export default function MappedToControl({ entry, onStudentChange, onEditMatch }:
     : null;
 
   // Matched + not in edit mode → show inline card
-  if (matchStatus === 'matched' && !isEditingMatch) {
+  if (matchStatus === MatchStatus.Matched && !isEditingMatch) {
     return (
       <div className={styles.matchedCard}>
         {mappedStudent && (
@@ -46,19 +46,19 @@ export default function MappedToControl({ entry, onStudentChange, onEditMatch }:
 
   const candidateIds = new Set(candidates.map((s) => s.id));
   const remaining = students.filter((s) => !candidateIds.has(s.id));
-  const hasGroups = matchStatus === 'multiple-matches' && candidates.length > 0;
+  const hasGroups = matchStatus === MatchStatus.MultipleMatches && candidates.length > 0;
 
   const placeholder =
-    matchStatus === 'no-match'
+    matchStatus === MatchStatus.NoMatch
       ? 'No Match Found'
-      : matchStatus === 'multiple-matches'
+      : matchStatus === MatchStatus.MultipleMatches
         ? 'Multiple Matches Found'
         : 'Select student…';
 
   const variant =
-    matchStatus === 'no-match'
+    matchStatus === MatchStatus.NoMatch
       ? 'no-match'
-      : matchStatus === 'multiple-matches'
+      : matchStatus === MatchStatus.MultipleMatches
         ? 'multiple-matches'
         : 'default';
 
